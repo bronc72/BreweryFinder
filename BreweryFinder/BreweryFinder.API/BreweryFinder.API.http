@@ -1,0 +1,8 @@
+@BreweryFinder.API_HostAddress = http://localhost:5164
+
+GET {{BreweryFinder.API_HostAddress}}/GetBreweries/
+Accept: application/json
+
+###
+# https://www.openbrewerydb.org/documentation/
+GET https://api.openbrewerydb.org/v1/breweries?by_state=michigan&per_page=3&by_type=micro
