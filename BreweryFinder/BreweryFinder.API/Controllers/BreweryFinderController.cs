@@ -1,9 +1,7 @@
 ﻿using BreweryFinder.API.Models;
 using BreweryFinder.API.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
-using System.Net.Http;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
 namespace BreweryFinder.API.Controllers;
@@ -17,26 +15,40 @@ public class BreweryFinderController : ControllerBase
     private readonly ILogger<BreweryFinderController> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IBreweryService _breweryService;
+    private readonly IDistributedCache _cache;
 
-    public BreweryFinderController(ILogger<BreweryFinderController> logger, IHttpClientFactory httpClientFactory, IBreweryService breweryService)
+    public BreweryFinderController(ILogger<BreweryFinderController> logger, IHttpClientFactory httpClientFactory, IBreweryService breweryService, IDistributedCache cache)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _breweryService = breweryService;
+        _cache = cache;
     }
 
     [HttpGet("GetBreweriesAsync")]
-    public async Task<IActionResult> GetAsync()
+    public async Task<IActionResult> GetAsync(string city)
     {
-        using HttpClient client = _httpClientFactory.CreateClient();
+        string cacheKey = $"breweries_byCity{city}";
+        var cachedBreweries = await _cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cachedBreweries))
+        {
+            var breweries = JsonSerializer.Deserialize<List<Brewery>>(cachedBreweries);
+            return Ok(breweries);
+        }
+
         try
         {
-            var state = "michigan";
-            var url = $"https://api.openbrewerydb.org/v1/breweries?by_city=flint&per_page=10";
-            using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            var breweries = await JsonSerializer.DeserializeAsync<List<Brewery>>(stream).ConfigureAwait(false);
+            var breweries = await _breweryService.GetBreweriesByCity(city);
+
+            if (breweries != null)
+            {
+                var cacheOptions = new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+                };
+                await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(breweries), cacheOptions);
+            }
+
             return Ok(breweries ?? []);
         }
         catch (HttpRequestException httpEx)
