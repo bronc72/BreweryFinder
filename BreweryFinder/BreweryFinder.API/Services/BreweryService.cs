@@ -7,8 +7,6 @@ public class BreweryService(HttpClient httpClient, ILogger<BreweryService> logge
 {
     private readonly HttpClient _httpClient = httpClient;
     private readonly ILogger<BreweryService> _logger = logger;
-
-
     public async Task<List<Brewery>> GetBreweriesByCity(string city)
     {
         try
