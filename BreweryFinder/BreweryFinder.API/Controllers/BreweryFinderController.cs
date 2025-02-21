@@ -38,6 +38,7 @@ public class BreweryFinderController : ControllerBase
 
         try
         {
+            _logger.LogInformation("Getting breweries for city: {City}", city);
             var breweries = await _breweryService.GetBreweriesByCity(city);
 
             if (breweries != null)
