@@ -4,35 +4,27 @@ using System.Text.Json;
 
 namespace BreweryFinder.API.Services;
 
-public class BreweryService : IBreweryService, IDisposable
+public class BreweryService(HttpClient httpClient, ILogger<BreweryService> logger) : IBreweryService, IDisposable
 {
-    private readonly HttpClient _httpClient;
-    private readonly ILogger<BreweryService> _logger;
     private bool _disposed;
-
-    public BreweryService(HttpClient httpClient, ILogger<BreweryService> logger)
-    {
-        _httpClient = httpClient;
-        _logger = logger;
-    }
 
     public async Task<List<Brewery>> GetBreweriesByCityAsync(string city)
     {
-            var url = $"{_httpClient.BaseAddress}?by_city={Uri.EscapeDataString(city)}";
+            var url = $"{httpClient.BaseAddress}?by_city={Uri.EscapeDataString(city)}";
             return await GetBreweriesInternalAsync(url).ConfigureAwait(false);
     }
 
     public async Task<List<Brewery>> GetBreweriesByStateAsync(string state)
     {
 
-        var url = $"{_httpClient.BaseAddress}?by_type={Uri.EscapeDataString(state)}";
+        var url = $"{httpClient.BaseAddress}?by_type={Uri.EscapeDataString(state)}";
         return await GetBreweriesInternalAsync(url).ConfigureAwait(false);
     }
 
 
     public async Task<List<Brewery>> GetBreweriesByTypeAsync(string type)
     {
-        var url = $"{_httpClient.BaseAddress}?by_type={Uri.EscapeDataString(type)}";
+        var url = $"{httpClient.BaseAddress}?by_type={Uri.EscapeDataString(type)}";
         return await GetBreweriesInternalAsync(url).ConfigureAwait(false);
     }
 
@@ -41,18 +33,18 @@ public class BreweryService : IBreweryService, IDisposable
         try
         {
           
-            using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             return await ParseBreweriesFromResponseAsync(response).ConfigureAwait(false);
         }
         catch (HttpRequestException httpEx)
         {
-            _logger.LogError(httpEx, "HTTP request error: {Error}", httpEx.Message);
+            logger.LogError(httpEx, "HTTP request error: {Error}", httpEx.Message);
             return new List<Brewery>();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting breweries by state: {Error}", ex.Message);
+            logger.LogError(ex, "Error getting breweries by state: {Error}", ex.Message);
             return new List<Brewery>();
         }
     }
@@ -77,7 +69,7 @@ public class BreweryService : IBreweryService, IDisposable
         {
             if (disposing)
             {
-                _httpClient?.Dispose();
+                httpClient?.Dispose();
             }
             _disposed = true;
         }
