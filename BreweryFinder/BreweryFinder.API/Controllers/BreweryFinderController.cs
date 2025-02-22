@@ -10,26 +10,13 @@ namespace BreweryFinder.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 //[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class BreweryFinderController : ControllerBase
+public class BreweryFinderController(ILogger<BreweryFinderController> logger, IBreweryService breweryService, IDistributedCache cache) : ControllerBase
 {
-    private readonly ILogger<BreweryFinderController> _logger;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IBreweryService _breweryService;
-    private readonly IDistributedCache _cache;
-
-    public BreweryFinderController(ILogger<BreweryFinderController> logger, IHttpClientFactory httpClientFactory, IBreweryService breweryService, IDistributedCache cache)
-    {
-        _logger = logger;
-        _httpClientFactory = httpClientFactory;
-        _breweryService = breweryService;
-        _cache = cache;
-    }
-
     [HttpGet("GetBreweriesAsync")]
     public async Task<IActionResult> GetAsync(string city)
     {
-        string cacheKey = $"breweries_byCity{city}";
-        var cachedBreweries = await _cache.GetStringAsync(cacheKey);
+        string cacheKey = "breweries_byCity_flint";
+        var cachedBreweries = await cache.GetStringAsync(cacheKey);
         if (!string.IsNullOrEmpty(cachedBreweries))
         {
             var breweries = JsonSerializer.Deserialize<List<Brewery>>(cachedBreweries);
@@ -38,28 +25,29 @@ public class BreweryFinderController : ControllerBase
 
         try
         {
-            _logger.LogInformation("Getting breweries for city: {City}", city);
-            var breweries = await _breweryService.GetBreweriesByCity(city);
+            logger.LogInformation("Getting breweries for city: {City}", city);
+            var breweries = await breweryService.GetBreweriesByCity(city);
 
             if (breweries != null)
+                logger.LogInformation("Getting breweries for city: {City}", city);
             {
                 var cacheOptions = new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
                 };
-                await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(breweries), cacheOptions);
+                await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(breweries), cacheOptions);
             }
 
             return Ok(breweries ?? []);
         }
         catch (HttpRequestException httpEx)
         {
-            _logger.LogError("HTTP request error: {Error}", httpEx);
+            logger.LogError(httpEx, "HTTP request error: {Error}", httpEx.Message);
             return StatusCode(StatusCodes.Status503ServiceUnavailable, "Service unavailable. Please try again later.");
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error getting breweries: {Error}", ex);
+            logger.LogError(ex, "Error getting breweries: {Error}", ex.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }

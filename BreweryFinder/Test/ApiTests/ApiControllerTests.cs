@@ -8,12 +8,12 @@ using Moq;
 using System.Text;
 using System.Text.Json;
 
-namespace BreweryFinder.Tests
+namespace Test.ApiTests
 {
     public class BreweryFinderControllerTests
     {
         private readonly Mock<ILogger<BreweryFinderController>> _loggerMock;
-        private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
+    
         private readonly Mock<IBreweryService> _breweryServiceMock;
         private readonly Mock<IDistributedCache> _cacheMock;
         private readonly BreweryFinderController _controller;
@@ -21,10 +21,10 @@ namespace BreweryFinder.Tests
         public BreweryFinderControllerTests()
         {
             _loggerMock = new Mock<ILogger<BreweryFinderController>>();
-            _httpClientFactoryMock = new Mock<IHttpClientFactory>();
+           
             _breweryServiceMock = new Mock<IBreweryService>();
             _cacheMock = new Mock<IDistributedCache>();
-            _controller = new BreweryFinderController(_loggerMock.Object, _httpClientFactoryMock.Object, _breweryServiceMock.Object, _cacheMock.Object);
+            _controller = new BreweryFinderController(_loggerMock.Object,  _breweryServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]
@@ -33,8 +33,8 @@ namespace BreweryFinder.Tests
             // Arrange
             var breweries = new List<Brewery>
             {
-                new Brewery { Name = "Brewery1", City = "Flint", State = "Michigan" },
-                new Brewery { Name = "Brewery2", City = "Flint", State = "Michigan" }
+                new() { Name = "Brewery1", City = "Flint", State = "Michigan" },
+                new() { Name = "Brewery2", City = "Flint", State = "Michigan" }
             };
             var cachedBreweries = JsonSerializer.Serialize(breweries);
 
@@ -56,8 +56,8 @@ namespace BreweryFinder.Tests
             // Arrange
             var breweries = new List<Brewery>
             {
-                new Brewery { Name = "Brewery1", City = "Flint", State = "Michigan" },
-                new Brewery { Name = "Brewery2", City = "Flint", State = "Michigan" }
+                new() { Name = "Brewery1", City = "Flint", State = "Michigan" },
+                new() { Name = "Brewery2", City = "Flint", State = "Michigan" }
             };
 
 

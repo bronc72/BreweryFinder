@@ -1,6 +1,10 @@
 using BreweryFinder.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddServiceDefaults();
+
+// Add services to the container.
+builder.Services.AddProblemDetails();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
