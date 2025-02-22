@@ -1,2 +1,8 @@
 # For more info on HTTP files go to https://aka.ms/vs/httpfile
 GET https://api.openbrewerydb.org/v1/breweries?by_city=flint&per_page=10
+
+### Response
+GET https://api.openbrewerydb.org/v1/breweries?by_type=micro&by_state=michigan&per_page=10
+
+### Response
+GET https://api.openbrewerydb.org/v1/breweries?by_state=michigan&per_page=10
