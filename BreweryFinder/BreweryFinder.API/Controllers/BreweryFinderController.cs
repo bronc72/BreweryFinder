@@ -8,7 +8,7 @@ namespace BreweryFinder.API.Controllers;
 
 //[Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 //[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class BreweryFinderController(ILogger<BreweryFinderController> logger, IBreweryService breweryService, IDistributedCache cache) : ControllerBase
 {
@@ -18,12 +18,12 @@ public class BreweryFinderController(ILogger<BreweryFinderController> logger, IB
         try
         {
             string cacheKey = $"breweries_byCity_{city}";
-        var cachedBreweries = await cache.GetStringAsync(cacheKey);
-        if (!string.IsNullOrEmpty(cachedBreweries))
-        {
-            return ReturnCachedBreweries(cachedBreweries);
-        }
-        else
+            var cachedBreweries = await cache.GetStringAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cachedBreweries))
+            {
+                return ReturnCachedBreweries(cachedBreweries);
+            }
+            else
             {
                 return await CacheAndReturnBreweriesAsync(cacheKey, await breweryService.GetBreweriesByCityAsync(city));
             }
@@ -39,7 +39,6 @@ public class BreweryFinderController(ILogger<BreweryFinderController> logger, IB
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }
-
 
     [HttpGet("byState")]
     public async Task<IActionResult> GetBreweriesByState(string state)
@@ -67,7 +66,6 @@ public class BreweryFinderController(ILogger<BreweryFinderController> logger, IB
             logger.LogError(ex, "Error getting breweries: {Error}", ex.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
-
     }
 
     [HttpGet("byType")]
@@ -96,7 +94,6 @@ public class BreweryFinderController(ILogger<BreweryFinderController> logger, IB
             logger.LogError(ex, "Error getting breweries: {Error}", ex.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
-
     }
 
     private OkObjectResult ReturnCachedBreweries(string cachedBreweries)
@@ -104,6 +101,7 @@ public class BreweryFinderController(ILogger<BreweryFinderController> logger, IB
         var breweries = JsonSerializer.Deserialize<List<Brewery>>(cachedBreweries);
         return Ok(breweries);
     }
+
     private async Task<IActionResult> CacheAndReturnBreweriesAsync(string cacheKey, List<Brewery>? breweries)
     {
         if (breweries != null)
@@ -115,7 +113,6 @@ public class BreweryFinderController(ILogger<BreweryFinderController> logger, IB
             await cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(breweries), cacheOptions);
         }
 
-        return Ok(breweries ?? []);
+        return Ok(breweries ?? new List<Brewery>());
     }
-
 }

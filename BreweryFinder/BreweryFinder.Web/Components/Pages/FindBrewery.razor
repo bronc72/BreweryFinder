@@ -1,15 +1,13 @@
-﻿@page "/brewery"
+﻿@page "/brewery/bycity"
 @using BreweryFinder.API.Models
 @using BreweryFinder.API.Services
 @attribute [StreamRendering]
-@inject HttpClient Http
+@inject BreweryServiceApiClient BreweryApi
 @rendermode InteractiveServer
 
 <PageTitle>Brewery Finder</PageTitle>
 
 <h1>Find a brewery</h1>
-
-<p>This component demonstrates showing data.</p>
 
 <input type="text" @bind="city" placeholder="Enter city" />
 <button class="btn btn-primary" @onclick="LoadBreweries">Search</button>
@@ -55,14 +53,11 @@ else
     private Brewery[]? breweries;
     private string city = String.Empty;
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //      await LoadBreweries();
-    // }
-
     private async Task LoadBreweries()
     {
-       
-        breweries = await Http.GetFromJsonAsync<Brewery[]>($"https://api.openbrewerydb.org/v1/breweries?by_city={city}&per_page=20");
+        if (!string.IsNullOrWhiteSpace(city))
+        {
+            breweries = await BreweryApi.GetBreweriesByCityAsync(city);
+        }
     }
 }

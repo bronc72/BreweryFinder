@@ -1,6 +1,5 @@
 using BreweryFinder.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Scalar.AspNetCore;
 
@@ -23,11 +22,12 @@ builder.Services.AddOpenApi();
 
 
 builder.Services.AddHttpClient<IBreweryService, BreweryService>(
-    client =>
+    static client =>
     {
-        client.BaseAddress = new Uri("https://api.openbrewerydb.org/");
+        client.BaseAddress = new Uri("https://api.openbrewerydb.org/v1/breweries");
         client.DefaultRequestHeaders.Add("Accept", "application/json");
     });
+
 
 builder.Services.AddScoped<IBreweryService, BreweryService>();
 
