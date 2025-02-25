@@ -1,6 +1,6 @@
-@BreweryFinder.API_HostAddress = http://localhost:5164
+@BreweryFinder.API_HostAddress = https://localhost:7178
 
-GET {{BreweryFinder.API_HostAddress}}/GetBreweries/
+GET {{BreweryFinder.API_HostAddress}}/GetBreweries/byCity?flint
 Accept: application/json
 
 ###

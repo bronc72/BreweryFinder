@@ -1,11 +1,22 @@
+using BreweryFinder.API.Services;
+using BreweryFinder.Web;
 using BreweryFinder.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddServiceDefaults();
+
+// Add services to the container.
+builder.Services.AddProblemDetails();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<BreweryServiceApiClient>(client =>
+    {
+        client.BaseAddress = new("https+http://apiservice");
+    });
+
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,5 +35,7 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapDefaultEndpoints();
 
 app.Run();

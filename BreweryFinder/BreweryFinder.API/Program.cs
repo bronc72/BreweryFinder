@@ -1,12 +1,15 @@
 using BreweryFinder.API.Services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Scalar.AspNetCore;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add service defaults & Aspire client integrations.
+builder.AddServiceDefaults();
+
+// Add services to the container.
+builder.Services.AddProblemDetails();
 
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -19,11 +22,12 @@ builder.Services.AddOpenApi();
 
 
 builder.Services.AddHttpClient<IBreweryService, BreweryService>(
-    client =>
+    static client =>
     {
-        client.BaseAddress = new Uri("https://api.openbrewerydb.org/");
+        client.BaseAddress = new Uri("https://api.openbrewerydb.org/v1/breweries");
         client.DefaultRequestHeaders.Add("Accept", "application/json");
     });
+
 
 builder.Services.AddScoped<IBreweryService, BreweryService>();
 

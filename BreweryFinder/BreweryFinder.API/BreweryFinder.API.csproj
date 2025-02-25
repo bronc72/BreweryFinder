@@ -21,4 +21,8 @@
     <PackageReference Include="Scalar.AspNetCore" Version="2.0.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BreweryFinder.ServiceDefaults\BreweryFinder.ServiceDefaults.csproj" />
+  </ItemGroup>
+
 </Project>
