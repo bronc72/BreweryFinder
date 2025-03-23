@@ -1,12 +1,15 @@
 using BreweryFinder.API.Controllers;
 using BreweryFinder.API.Models;
 using BreweryFinder.API.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Text;
 using System.Text.Json;
+
+namespace BreweryFinder.Tests.ApiTests;
 
 public class BreweryFinderControllerTests
 {
@@ -95,7 +98,7 @@ public class BreweryFinderControllerTests
         string state = "TestState";
         string cacheKey = $"breweries_byState_{state}";
         var breweries = new List<Brewery> { new Brewery { Name = "Test Brewery" } };
-    
+
         _cacheMock.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
           .ReturnsAsync((byte[])null);
         _breweryServiceMock.Setup(s => s.GetBreweriesByStateAsync(state)).ReturnsAsync(breweries);
@@ -139,7 +142,7 @@ public class BreweryFinderControllerTests
         string cacheKey = $"breweries_byType_{type}";
         var breweries = new List<Brewery> { new Brewery { Name = "Test Brewery" } };
         _cacheMock.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-         .ReturnsAsync((byte[])null); ;
+         .ReturnsAsync((byte[])null); 
         _breweryServiceMock.Setup(s => s.GetBreweriesByTypeAsync(type)).ReturnsAsync(breweries);
 
         // Act

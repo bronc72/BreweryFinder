@@ -14,4 +14,12 @@ public class BreweryServiceApiClient(HttpClient httpClient)
         var breweries = await httpClient.GetFromJsonAsync<Brewery[]>($"/api/breweryfinder/byState?state={state}");
         return breweries ?? [];
     }
+
+    //this will be used to get breweries by any search criteria
+
+    public async Task<Brewery[]> GetBreweriesAsync(BrewerySearchCriteria searchCriteria)
+    {
+        var breweries = await httpClient.GetFromJsonAsync<Brewery[]>($"/api/breweryfinder?{searchCriteria}");
+        return breweries ?? [];
+    }
 }

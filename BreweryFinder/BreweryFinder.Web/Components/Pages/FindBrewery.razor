@@ -8,46 +8,51 @@
 <PageTitle>Brewery Finder</PageTitle>
 
 <h1>Find a brewery</h1>
+<div class="input-group mb-3">
+    <input type="text" class="form-control" @bind="city" placeholder="Enter city" />
+    <button class="btn btn-primary" @onclick="LoadBreweries">Search</button>
+</div>
 
-<input type="text" @bind="city" placeholder="Enter city" />
-<button class="btn btn-primary" @onclick="LoadBreweries">Search</button>
-
-@if (breweries == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Street</th>
-                <th>City</th>
-                <th>State</th>
-                <th>Postal Code</th>
-                <th>Phone</th>
-                <th>Website</th>
-                <th>Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var brewery in breweries)
-            {
-                <tr>
-                    <td>@brewery.Name</td>
-                    <td>@brewery.Street</td>
-                    <td>@brewery.City</td>
-                    <td>@brewery.State</td>
-                    <td>@brewery.PostalCode</td>
-                    <td>@brewery.Phone</td>
-                    <td><a href="@brewery.Website">@brewery.Website</a></td>
-                    <td>@brewery.BreweryType</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Street</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Postal Code</th>
+                            <th>Phone</th>
+                            <th>Website</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (breweries != null)
+                        {
+                            @foreach (var brewery in breweries)
+                            {
+                                <tr>
+                                    <td>@brewery.Name</td>
+                                    <td>@brewery.Street</td>
+                                    <td>@brewery.City</td>
+                                    <td>@brewery.State</td>
+                                    <td>@brewery.PostalCode</td>
+                                    <td>@FormatPhoneNumber(brewery.Phone)</td>
+                                    <td><a href="@brewery.Website">@brewery.Website</a></td>
+                                    <td>@brewery.BreweryType</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     private Brewery[]? breweries;
@@ -59,5 +64,15 @@ else
         {
             breweries = await BreweryApi.GetBreweriesByCityAsync(city);
         }
+    }
+
+    private string FormatPhoneNumber(string? phone)
+    {
+        if (string.IsNullOrEmpty(phone) || phone.Length != 10)
+        {
+            return phone ?? string.Empty;
+        }
+
+        return $"({phone.Substring(0, 3)}) {phone.Substring(3, 3)}-{phone.Substring(6, 4)}";
     }
 }

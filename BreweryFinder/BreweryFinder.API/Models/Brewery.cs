@@ -28,4 +28,13 @@ namespace BreweryFinder.API.Models
         [JsonPropertyName("website_url")]
         public string? Website { get; set; }
     }
+
+    public class BrewerySearchCriteria
+    {
+        public string? Name { get; set; }
+        public string? BreweryType { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? PostalCode { get; set; }
+    }
 }

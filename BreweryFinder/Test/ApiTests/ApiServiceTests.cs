@@ -5,7 +5,7 @@ using Moq;
 using Moq.Protected;
 using System.Text.Json;
 
-namespace BreweryFinder.Tests;
+namespace Test.ApiTests;
 
 public class BreweryServiceTests
 {
@@ -204,4 +204,41 @@ public class BreweryServiceTests
         Assert.Empty(result);
     }
 
+
+
+    [Fact]
+    public async Task GetBreweriesAsync_WithValidSearchCriteria_ReturnsBreweries()
+    {
+        // Arrange
+        var searchCriteria = new BrewerySearchCriteria { City = "San Diego", State = "California", BreweryType = "micro" };
+        var responseContent = "[{\"name\":\"Brewery 1\",\"brewery_type\":\"micro\",\"city\":\"San Diego\",\"state\":\"California\"}]";
+        var responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(responseContent)
+        };
+
+
+        _httpMessageHandlerMock.Protected()
+                               .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+                               .ReturnsAsync(responseMessage);
+        // Act
+        var result = await _breweryService.GetBreweriesAsync(searchCriteria);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal("Brewery 1", result[0].Name);
+    }
+
+    [Fact]
+    public async Task GetBreweriesAsync_WithNullSearchCriteria_ReturnsEmptyList()
+    {
+        // Act
+        var result = await _breweryService.GetBreweriesAsync(null);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Empty(result);
+
+    }
 }
