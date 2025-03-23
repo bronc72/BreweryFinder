@@ -10,7 +10,11 @@
 <h1>Find a brewery</h1>
 <div class="input-group mb-3">
     <input type="text" class="form-control" @bind="city" placeholder="Enter city" />
-    <button class="btn btn-primary" @onclick="LoadBreweries">Search</button>
+    <input type="text" class="form-control" @bind="state" placeholder="Enter state" />
+    <input type="text" class="form-control" @bind="name" placeholder="Enter name" />
+    <input type="text" class="form-control" @bind="breweryType" placeholder="Enter brewery type" />
+    <input type="text" class="form-control" @bind="postalCode" placeholder="Enter postal code" />
+    <button class="btn btn-primary" @onclick="SearchBreweries">Search</button>
 </div>
 
 <div class="container">
@@ -56,14 +60,25 @@
 
 @code {
     private Brewery[]? breweries;
-    private string city = String.Empty;
+    private string city = string.Empty;
+    private string state = string.Empty;
+    private string name = string.Empty;
+    private string breweryType = string.Empty;
+    private string postalCode = string.Empty;
 
-    private async Task LoadBreweries()
+    private async Task SearchBreweries()
     {
-        if (!string.IsNullOrWhiteSpace(city))
-        {
-            breweries = await BreweryApi.GetBreweriesByCityAsync(city);
-        }
+        var searchCriteria = new BrewerySearchCriteria
+            {
+                City = city,
+                State = state,
+                Name = name,
+                BreweryType = breweryType,
+                PostalCode = postalCode
+            };
+
+        var breweryList = await BreweryApi.GetBreweriesAsync(searchCriteria);
+        breweries = breweryList.ToArray();
     }
 
     private string FormatPhoneNumber(string? phone)

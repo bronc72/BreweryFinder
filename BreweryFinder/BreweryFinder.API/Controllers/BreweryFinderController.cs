@@ -13,7 +13,7 @@ namespace BreweryFinder.API.Controllers;
 public class BreweryFinderController(ILogger<BreweryFinderController> logger, IBreweryService breweryService, IDistributedCache cache) : ControllerBase
 {
 
-    [HttpPost]
+    [HttpPost("search")]
     public async Task<IActionResult> GetBreweriesAsync([FromBody] BrewerySearchCriteria searchCriteria)
     {
         try
