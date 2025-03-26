@@ -12,14 +12,56 @@ public class BreweryService : IBreweryService, IDisposable
     public BreweryService(HttpClient httpClient, ILogger<BreweryService> logger)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _httpClient.BaseAddress = new Uri("https://api.openbrewerydb.org/v1/breweries"); // Set the base address here
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    public async Task<List<Brewery>> GetBreweriesAsync(BrewerySearchCriteria searchCriteria)
+    {
+        if (searchCriteria != null)
+        {
+            string url = BuildSearchUrl(searchCriteria);
+
+            return await GetBreweriesInternalAsync(url).ConfigureAwait(false);
+        }
+        else
+        {
+            return new List<Brewery>();
+        }
+    }
+
+    private string BuildSearchUrl(BrewerySearchCriteria searchCriteria)
+    {
+        var url = $"{_httpClient.BaseAddress}?";
+
+        if (!string.IsNullOrEmpty(searchCriteria.City))
+        {
+            url += $"by_city={Uri.EscapeDataString(searchCriteria.City)}&";
+        }
+        if (!string.IsNullOrEmpty(searchCriteria.State))
+        {
+            url += $"by_state={Uri.EscapeDataString(searchCriteria.State)}&";
+        }
+        if (!string.IsNullOrEmpty(searchCriteria.BreweryType))
+        {
+            url += $"by_type={Uri.EscapeDataString(searchCriteria.BreweryType)}&";
+        }
+        if (!string.IsNullOrEmpty(searchCriteria.Name))
+        {
+            url += $"by_name={Uri.EscapeDataString(searchCriteria.Name)}&";
+        }
+        if (!string.IsNullOrEmpty(searchCriteria.PostalCode))
+        {
+            url += $"by_postalcode={Uri.EscapeDataString(searchCriteria.PostalCode)}&";
+        }
+     
+        return url.TrimEnd('&');
+    }
 
     public async Task<List<Brewery>> GetBreweriesByCityAsync(string city)
     {
-        var baseAddress = new Uri("https://api.openbrewerydb.org/v1/breweries");
-        var url = $"{baseAddress}?by_city={Uri.EscapeDataString(city)}";
+      
+        var url = $"{_httpClient.BaseAddress}?by_city={Uri.EscapeDataString(city)}";
         return await GetBreweriesInternalAsync(url).ConfigureAwait(false);
     }
 

@@ -5,6 +5,7 @@ namespace BreweryFinder.API.Services
 {
     public interface IBreweryService
     {
+        Task<List<Brewery>> GetBreweriesAsync(BrewerySearchCriteria searchCriteria);
         Task<List<Brewery>> GetBreweriesByCityAsync(string city);
 
         Task<List<Brewery>> GetBreweriesByStateAsync(string state);

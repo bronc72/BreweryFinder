@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BreweryFinder.AppHost", "Br
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BreweryFinder.ServiceDefaults", "BreweryFinder.ServiceDefaults\BreweryFinder.ServiceDefaults.csproj", "{DD774298-9892-4CA5-9E50-5A3F58334CF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{7340276E-62B5-43AB-846C-6B33D7FA610E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BreweryFinder.Tests", "Test\BreweryFinder.Tests.csproj", "{7340276E-62B5-43AB-846C-6B33D7FA610E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BreweryFinder.API", "BreweryFinder.API\BreweryFinder.API.csproj", "{53418C13-27DF-4508-91BE-B9B58E26A73B}"
 EndProject

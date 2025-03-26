@@ -22,11 +22,12 @@ builder.Services.AddOpenApi();
 
 
 builder.Services.AddHttpClient<IBreweryService, BreweryService>(
-    static client =>
+    client =>
     {
         client.BaseAddress = new Uri("https://api.openbrewerydb.org/v1/breweries");
         client.DefaultRequestHeaders.Add("Accept", "application/json");
     });
+
 
 
 builder.Services.AddScoped<IBreweryService, BreweryService>();
