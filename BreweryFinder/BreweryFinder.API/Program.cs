@@ -5,6 +5,18 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddExceptionHandler(options =>
+{
+    options.ExceptionHandlingPath = "/error";
+    options.CreateScopeForErrors = true; // Adjusted to use a valid property
+});
+
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
+});
+
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
 
@@ -43,6 +55,9 @@ if (app.Environment.IsDevelopment())
         options.Servers = [];
     });
 }
+
+app.UseExceptionHandler("/info/error");
+
 
 app.UseHttpsRedirection();
 

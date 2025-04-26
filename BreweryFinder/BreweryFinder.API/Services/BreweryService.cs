@@ -22,7 +22,7 @@ public class BreweryService : IBreweryService, IDisposable
         {
             string url = BuildSearchUrl(searchCriteria);
 
-            return await GetBreweriesInternalAsync(url).ConfigureAwait(false);
+            return await GetBreweriesInternalAsync(url);
         }
         else
         {
@@ -86,7 +86,7 @@ public class BreweryService : IBreweryService, IDisposable
 
             using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-            return await ParseBreweriesFromResponseAsync(response).ConfigureAwait(false);
+            return await ParseBreweriesFromResponseAsync(response);
         }
         catch (HttpRequestException httpEx)
         {
@@ -105,7 +105,7 @@ public class BreweryService : IBreweryService, IDisposable
         if (response.IsSuccessStatusCode)
         {
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            var breweries = await JsonSerializer.DeserializeAsync<List<Brewery>>(stream).ConfigureAwait(false);
+            var breweries = await JsonSerializer.DeserializeAsync<List<Brewery>>(stream);
             return breweries ?? new List<Brewery>();
         }
         else
