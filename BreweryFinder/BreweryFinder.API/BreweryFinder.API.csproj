@@ -9,16 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.3" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.3" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.8.1" />
-    <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.8.1" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="3.8.1" />
+    <PackageReference Include="Apache.Arrow" Version="19.0.1" />
+    <PackageReference Include="Aspire.Azure.Storage.Blobs" Version="9.2.1" />
+    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.4" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.8.4" />
+    <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.8.4" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="3.8.4" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Parquet.Net" Version="5.1.1" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
